@@ -59,7 +59,10 @@ public class Aiming : MonoBehaviour {
         }
         if (_gameManager.STATE == GameManager.GameState.WaitForCalibration) {
 
-            GUI.Label(new Rect(Screen.width/4f,Screen.height/3f,Screen.width,Screen.height),"<size=30>Wait for opponent to calibrate</size>");
+            GUI.Label(new Rect(Screen.width/4f,Screen.height/3f,Screen.width,Screen.height),"<size=30>Wait for opponent to calibrate " + _calibrationCount + "</size>");
+            if (_calibrationCount == 2) {
+                GameManager.instance.STATE = GameManager.GameState.CountDown;
+            }
         }
     }
 
@@ -76,8 +79,5 @@ public class Aiming : MonoBehaviour {
     [RPC]
     void ICalibrated() {
         _calibrationCount++;
-        if (_calibrationCount == 2) {
-            GameManager.instance.STATE = GameManager.GameState.Unprepared;
-        }
     }
 }

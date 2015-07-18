@@ -9,6 +9,7 @@ public class GameManager : MonoBehaviour {
         Debug,
         Calibration,
         WaitForCalibration,
+        CountDown,
         Unprepared,
         Opened,
         Filled,
@@ -81,14 +82,23 @@ public class GameManager : MonoBehaviour {
         }
     }
     void OnGUI(){
+        Rect messageRect = new Rect(Screen.width/10f,Screen.height*0.4f,Screen.width,Screen.height);
         if (STATE == GameState.IWon) {
-            GUI.Label(new Rect(Screen.width/4f,Screen.height/3f,Screen.width,Screen.height),"<size=30>I won!</size>");
+            GUI.Label(messageRect, "<size=60>I won!</size>");
         }
         if (STATE == GameState.ILost) {
-            GUI.Label(new Rect(Screen.width/4f,Screen.height/3f,Screen.width,Screen.height),"<size=30>I lost!</size>");
+            GUI.Label(messageRect, "<size=60>I lost!</size>");
+        }
+        if (STATE == GameState.CountDown) {
+            GUI.Label(messageRect, "<size=60>CountDown!</size>");
         }
     }
 
+    IEnumerator CountDown(float pDelay) {
+        yield return new WaitForSeconds(pDelay);
+        STATE = GameState.Unprepared;
+    }
+    
     IEnumerator DelayedRestart(float pDelay) {
         yield return new WaitForSeconds(pDelay);
         Debug.Log("Restarting");
