@@ -5,6 +5,10 @@ public class GameManager : MonoBehaviour {
 
     private static GameManager _instance;
 
+    public SpriteRenderer WinSprite;
+    public SpriteRenderer LoseSprite;
+    public GameObject WhiteOut;
+
     public enum GameState {
         Debug,
         Calibration,
@@ -22,6 +26,10 @@ public class GameManager : MonoBehaviour {
 
     public GameState STATE = GameState.Calibration;
 
+    public void GotoUnprepared() {
+        STATE = GameState.Unprepared;
+    }
+
     public void GotoOpened() {
         STATE = GameState.Opened;
     }
@@ -35,20 +43,22 @@ public class GameManager : MonoBehaviour {
     }
 
     public void Update() {
-        if (STATE == GameState.Unprepared) {
-        // Replace this with gameplay later
-            GunAnimation.instance.Open();
+        if (STATE == GameState.CountDown) {
+            GunAnimation.instance.CountDown();
         }
         if (STATE == GameState.Opened) {
         // Replace this with gameplay later
             STATE = GameState.Filled;
-            // GunAnimation.instance.Open();
         }
-        if (STATE == GameState.Filled) {
-            GunAnimation.instance.Close();
+        if (STATE == GameState.IWon) {
+            GunAnimation.instance.PlayYouWin();
+            WhiteOut.active = false;
+            WinSprite.enabled = true;
         }
-        if (STATE == GameState.Closed) {
-            GunAnimation.instance.Cock();
+        if (STATE == GameState.ILost) {
+            GunAnimation.instance.PlayYouLose();
+            WhiteOut.active = false;
+            LoseSprite.enabled = true;
         }
     }
 
@@ -83,22 +93,17 @@ public class GameManager : MonoBehaviour {
     }
     void OnGUI(){
         Rect messageRect = new Rect(Screen.width/10f,Screen.height*0.4f,Screen.width,Screen.height);
-        if (STATE == GameState.IWon) {
-            GUI.Label(messageRect, "<size=60>I won!</size>");
-        }
-        if (STATE == GameState.ILost) {
-            GUI.Label(messageRect, "<size=60>I lost!</size>");
-        }
+        // if (STATE == GameState.IWon) {
+        //     GUI.Label(messageRect, "<size=60>I won!</size>");
+        // }
+        // if (STATE == GameState.ILost) {
+        //     GUI.Label(messageRect, "<size=60>I lost!</size>");
+        // }
         if (STATE == GameState.CountDown) {
             GUI.Label(messageRect, "<size=60>CountDown!</size>");
         }
     }
 
-    IEnumerator CountDown(float pDelay) {
-        yield return new WaitForSeconds(pDelay);
-        STATE = GameState.Unprepared;
-    }
-    
     IEnumerator DelayedRestart(float pDelay) {
         yield return new WaitForSeconds(pDelay);
         Debug.Log("Restarting");
