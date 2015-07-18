@@ -8,13 +8,39 @@ public class GameManager : MonoBehaviour {
     public enum GameState {
         Debug,
         Calibration,
-        Preparation,
+        WaitForCalibration,
+        Unprepared,
+        Opened,
+        Filled,
+        Closed,
+        Cocked,
         Aiming,
         IWon,
         ILost
     }
 
-    public GameState STATE = GameState.Aiming;
+    public void GotoOpened() {
+        STATE = GameState.Opened;
+    }
+
+    public void GotoClosed() {
+        STATE = GameState.Closed;
+    }
+
+    public void GotoAiming() {
+        STATE = GameState.Aiming;
+    }
+
+    public void Update() {
+        if (STATE == GameState.Filled) {
+            GunAnimation.instance.Close();
+        }
+        if (STATE == GameState.Cocked) {
+            GunAnimation.instance.Cock();
+        }
+    }
+
+    public GameState STATE = GameState.Calibration;
 
     public void DecideOutcome(bool pServerWasShot) {
         if (pServerWasShot) {
@@ -59,5 +85,10 @@ public class GameManager : MonoBehaviour {
         Debug.Log("Restarting");
         Network.Disconnect();
         Application.LoadLevel(0);
+    }
+
+    [RPC]
+    void DoneCalibrating () {
+
     }
 }

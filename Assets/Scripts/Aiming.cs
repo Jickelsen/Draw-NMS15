@@ -9,6 +9,7 @@ public class Aiming : MonoBehaviour {
     public float Aim;
     public bool InSights = false;
     Vector3 _targetDirection;
+    int _calibrationCount = 0;
 
     AudioSource audio;
 
@@ -20,7 +21,7 @@ public class Aiming : MonoBehaviour {
 
     void Start() {
         audio = GetComponent<AudioSource>();
-        audio.pitch = CenterPitch;
+        // audio.pitch = CenterPitch;
         _targetDirection = AimVector();
         _gameManager = GameManager.instance;
     }
@@ -28,7 +29,7 @@ public class Aiming : MonoBehaviour {
     void Update() {
         Aim = Vector3.Dot(_targetDirection, AimVector());
         if (_gameManager.STATE == GameManager.GameState.Aiming) {
-            audio.pitch = Aim * CenterPitch;
+            // audio.pitch = Aim * CenterPitch;
             if (Aim > 0.95f) {
                 Handheld.Vibrate();
                 InSights = true;
@@ -45,8 +46,13 @@ public class Aiming : MonoBehaviour {
             GUI.Label(new Rect(Screen.width/4f,Screen.height/3f,Screen.width,Screen.height),"<size=30>Aim at opponent and hit Calibrate</size>");
             if(GUI.Button(new Rect(Screen.width/4, Screen.height/2, Screen.width/2, Screen.height/4), "<size=40>Calibrate</size>".ToUpper())){
                 _targetDirection = AimVector();
-                // STATE = AimState.Aiming;
+                GetComponent<NetworkView>().RPC("ICalibrated",RPCMode.All);
+                _gameManager.STATE = GameManager.GameState.WaitForCalibration;
             }
+        }
+        if (_gameManager.STATE == GameManager.GameState.WaitForCalibration) {
+
+            GUI.Label(new Rect(Screen.width/4f,Screen.height/3f,Screen.width,Screen.height),"<size=30>Wait for opponent to calibrate</size>");
         }
     }
 
@@ -57,6 +63,14 @@ public class Aiming : MonoBehaviour {
             if(_instance == null)
                 _instance = GameObject.FindObjectOfType<Aiming>();
             return _instance;
+        }
+    }
+
+    [RPC]
+    void ICalibrated() {
+        _calibrationCount++;
+        if (_calibrationCount == 2) {
+            GameManager.instance.STATE = GameManager.GameState.Unprepared;
         }
     }
 }
