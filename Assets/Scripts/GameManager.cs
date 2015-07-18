@@ -19,6 +19,8 @@ public class GameManager : MonoBehaviour {
         ILost
     }
 
+    public GameState STATE = GameState.Calibration;
+
     public void GotoOpened() {
         STATE = GameState.Opened;
     }
@@ -32,15 +34,22 @@ public class GameManager : MonoBehaviour {
     }
 
     public void Update() {
+        if (STATE == GameState.Unprepared) {
+        // Replace this with gameplay later
+            GunAnimation.instance.Open();
+        }
+        if (STATE == GameState.Opened) {
+        // Replace this with gameplay later
+            STATE = GameState.Filled;
+            // GunAnimation.instance.Open();
+        }
         if (STATE == GameState.Filled) {
             GunAnimation.instance.Close();
         }
-        if (STATE == GameState.Cocked) {
+        if (STATE == GameState.Closed) {
             GunAnimation.instance.Cock();
         }
     }
-
-    public GameState STATE = GameState.Calibration;
 
     public void DecideOutcome(bool pServerWasShot) {
         if (pServerWasShot) {
