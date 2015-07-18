@@ -7,45 +7,45 @@ public class Aiming : MonoBehaviour {
 
     public float CenterPitch = 2.5f;
     public float Aim;
+    public bool InSights = false;
     Vector3 _targetDirection;
 
     AudioSource audio;
 
-    public enum AimState {
-        Debug,
-        Calibrating,
-        Preparing,
-        Aiming
-    }
+    GameManager _gameManager;
 
-    public AimState STATE = AimState.Aiming;
+    Vector3 AimVector() {
+        return Input.gyro.attitude * Vector3.right;
+    }
 
     void Start() {
         audio = GetComponent<AudioSource>();
         audio.pitch = CenterPitch;
-        _targetDirection = Input.gyro.attitude * Vector3.forward;
+        _targetDirection = AimVector();
+        _gameManager = GameManager.instance;
     }
-    
+
     void Update() {
-        Vector3 gyroAttitude = Input.gyro.attitude * Vector3.forward;
-        Aim = Vector3.Dot(_targetDirection, gyroAttitude);
-        if (STATE == AimState.Aiming) {
+        Aim = Vector3.Dot(_targetDirection, AimVector());
+        if (_gameManager.STATE == GameManager.GameState.Aiming) {
             audio.pitch = Aim * CenterPitch;
-            if (Aim > 0.9f) {
+            if (Aim > 0.95f) {
                 Handheld.Vibrate();
+                InSights = true;
+            }
+            else {
+                InSights = false;
             }
         }
     }
 
     void OnGUI() {
-        if (STATE == AimState.Debug) {
-            GUI.Label(new Rect(Screen.width/4f,Screen.height/3f,Screen.width,Screen.height), (Input.gyro.attitude * Vector3.forward).ToString() + " and " + Aim);
-        }
-        if (STATE == AimState.Calibrating) {
+            // GUI.Label(new Rect(Screen.width/4f,Screen.height/3f,Screen.width,Screen.height), "<size=30>"+(AimVector()).ToString() + " and " + Aim + "</size>");
+        if (_gameManager.STATE == GameManager.GameState.Calibration) {
             GUI.Label(new Rect(Screen.width/4f,Screen.height/3f,Screen.width,Screen.height),"<size=30>Aim at opponent and hit Calibrate</size>");
             if(GUI.Button(new Rect(Screen.width/4, Screen.height/2, Screen.width/2, Screen.height/4), "<size=40>Calibrate</size>".ToUpper())){
-                _targetDirection = Input.gyro.attitude * Vector3.forward;
-                STATE = AimState.Aiming;
+                _targetDirection = AimVector();
+                // STATE = AimState.Aiming;
             }
         }
     }

@@ -10,11 +10,14 @@ public class MenuScript : MonoBehaviour {
     string ip = string.Empty;
 
     void Start() {
+			  ip = (PlayerPrefsX.GetStringArray("IP", "192.168.1.17", 1))[0];
         networking = GetComponent<InitNetworkingScript>();
-        ip = "10.155.22.41";
+        // ip = "10.155.22.41";
     }
 
     void OnPlayerConnected() {
+        string[] stringArray = {ip};
+			  PlayerPrefsX.SetStringArray("IP", stringArray);
         Application.LoadLevel(1);
     }
 
