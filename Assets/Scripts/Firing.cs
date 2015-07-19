@@ -14,8 +14,9 @@ public class Firing : MonoBehaviour {
 
     void Fire() {
         Debug.Log("Firing");
-        if (Aiming.instance.InSights) {
+        if (Aiming.instance.InSights && _fireTime == 0) {
             GunAnimation.instance.Shoot();
+            GunAnimation.instance.PlayShot();
             _fireTime = Network.time;
             Debug.Log("Hit with networktime " + _fireTime);
             if (Network.isServer) {

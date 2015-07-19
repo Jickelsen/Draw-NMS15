@@ -44,12 +44,15 @@ public class Aiming : MonoBehaviour {
                 InSights = false;
             }
         }
+        else {
+            audio.Stop();
+            _playing = false;
+        }
     }
 
     void OnGUI() {
             // GUI.Label(new Rect(Screen.width/4f,Screen.height/3f,Screen.width,Screen.height), "<size=30>"+(AimVector()).ToString() + " and " + Aim + "</size>");
         if (_gameManager.STATE == GameManager.GameState.Calibration) {
-            GUI.Label(new Rect(Screen.width/4f,Screen.height/3f,Screen.width,Screen.height),"<size=30>Aim at opponent and hit Calibrate</size>");
             if(GUI.Button(new Rect(Screen.width/4, Screen.height/2, Screen.width/2, Screen.height/4), "<size=40>Calibrate</size>".ToUpper())){
                 _targetDirection = -AimVector();
                 GetComponent<NetworkView>().RPC("ICalibrated",RPCMode.All);
@@ -58,8 +61,6 @@ public class Aiming : MonoBehaviour {
             }
         }
         if (_gameManager.STATE == GameManager.GameState.WaitForCalibration) {
-
-            GUI.Label(new Rect(Screen.width/4f,Screen.height/3f,Screen.width,Screen.height),"<size=30>Wait for opponent to calibrate " + _calibrationCount + "</size>");
             if (_calibrationCount == 2) {
                 GameManager.instance.STATE = GameManager.GameState.CountDown;
             }

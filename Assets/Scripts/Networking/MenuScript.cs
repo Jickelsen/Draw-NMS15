@@ -25,11 +25,11 @@ public class MenuScript : MonoBehaviour {
     void OnGUI() {
         // GUI.color = Color.black;
         //	GUI.skin = menuSkin;
-        GUI.skin.textField.fontSize = 25;
+        GUI.skin.textField.fontSize = 35;
         if (!Network.isServer) {
             Background.enabled = true;
-            ip = GUI.TextField(new Rect(Screen.width*0.53f, Screen.height - Screen.height/7, 200, 60), ip);
-            GUI.Label(new Rect(Screen.width*0.3f, Screen.height - Screen.height/7, 300, 50), "<size=30>IP-adress</size>");
+            ip = GUI.TextField(new Rect(Screen.width*0.53f, Screen.height - Screen.height/7, 300, 60), ip);
+            GUI.Label(new Rect(Screen.width*0.4f, Screen.height - Screen.height/7, 300, 50), "<size=40>IP-address</size>");
 
             if(GUI.Button(new Rect(Screen.width*0.03f, Screen.height*0.45f, Screen.width*0.4f, Screen.height/4), "".ToUpper(), GUIStyle.none)){
                 networking.StartServer();

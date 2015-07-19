@@ -21,7 +21,8 @@ public class GameManager : MonoBehaviour {
         Cocked,
         Aiming,
         IWon,
-        ILost
+        ILost,
+        GameOver
     }
 
     public GameState STATE = GameState.Calibration;
@@ -52,13 +53,15 @@ public class GameManager : MonoBehaviour {
         }
         if (STATE == GameState.IWon) {
             GunAnimation.instance.PlayYouWin();
-            WhiteOut.active = false;
+            WhiteOut.active = true;
             WinSprite.enabled = true;
+            STATE = GameState.GameOver;
         }
         if (STATE == GameState.ILost) {
             GunAnimation.instance.PlayYouLose();
-            WhiteOut.active = false;
+            WhiteOut.active = true;
             LoseSprite.enabled = true;
+            STATE = GameState.GameOver;
         }
     }
 
