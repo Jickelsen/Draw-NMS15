@@ -19,6 +19,7 @@ public class GunGestures : MonoBehaviour {
                 if (Physics.Raycast(ray, out hit)) {
                     if (_gameManager.STATE == GameManager.GameState.Unprepared) {
                         if (hit.collider.gameObject.name == "CylinderCollider") {
+                            hit.collider.enabled = false;
                             GunAnimation.instance.Open();
                         }
                     }

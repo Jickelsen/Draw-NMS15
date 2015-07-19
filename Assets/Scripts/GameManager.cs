@@ -8,6 +8,10 @@ public class GameManager : MonoBehaviour {
     public SpriteRenderer WinSprite;
     public SpriteRenderer LoseSprite;
     public GameObject WhiteOut;
+    float _soundDelay = 1f;
+    float _soundTimer = 0f;
+    bool _iWon = false;
+    bool _iLost = false;
 
     public enum GameState {
         Debug,
@@ -47,21 +51,33 @@ public class GameManager : MonoBehaviour {
         if (STATE == GameState.CountDown) {
             GunAnimation.instance.CountDown();
         }
-        if (STATE == GameState.Opened) {
-        // Replace this with gameplay later
-            STATE = GameState.Filled;
+        if (STATE == GameState.Filled) {
+            GunAnimation.instance.Close();
         }
         if (STATE == GameState.IWon) {
-            GunAnimation.instance.PlayYouWin();
+            _iWon = true;
             WhiteOut.active = true;
             WinSprite.enabled = true;
             STATE = GameState.GameOver;
         }
         if (STATE == GameState.ILost) {
-            GunAnimation.instance.PlayYouLose();
+            _iLost = true;
             WhiteOut.active = true;
             LoseSprite.enabled = true;
             STATE = GameState.GameOver;
+        }
+        if (STATE == GameState.GameOver) {
+            _soundTimer += Time.deltaTime;
+            if (_soundTimer >= _soundDelay) {
+                if (_iWon) {
+                    GunAnimation.instance.PlayYouWin();
+                    _iWon = false;
+                }
+                if (_iLost) {
+                    GunAnimation.instance.PlayYouLose();
+                    _iLost = false;
+                }
+            }
         }
     }
 
@@ -102,9 +118,6 @@ public class GameManager : MonoBehaviour {
         // if (STATE == GameState.ILost) {
         //     GUI.Label(messageRect, "<size=60>I lost!</size>");
         // }
-        if (STATE == GameState.CountDown) {
-            GUI.Label(messageRect, "<size=60>CountDown!</size>");
-        }
     }
 
     IEnumerator DelayedRestart(float pDelay) {

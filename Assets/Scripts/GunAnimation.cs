@@ -13,6 +13,7 @@ public class GunAnimation: MonoBehaviour {
     public AudioClip Draw;
     public AudioClip CockingSound;
     public AudioClip CylinderClickSound;
+    public AudioClip InsertBullet;
     public AudioClip ShotSound;
     GameManager _gameManager;
     bool _countDown = false;
@@ -58,6 +59,10 @@ public class GunAnimation: MonoBehaviour {
         _audio.PlayOneShot(CylinderClickSound);
     }
 
+    public void PlayInsertBullet() {
+        _audio.PlayOneShot(InsertBullet);
+    }
+
     public void PlayShot() {
         _audio.PlayOneShot(ShotSound, 2f);
     }
@@ -99,25 +104,25 @@ public class GunAnimation: MonoBehaviour {
     void OnGUI() {
         Rect messageRect = new Rect(Screen.width/4f,Screen.height*0.8f,Screen.width,Screen.height);
         if (_gameManager.STATE == GameManager.GameState.Calibration) {
-            GUI.Label(messageRect,"<size=40>Aim at opponent and hit Calibrate</size>");
+            GUI.Label(messageRect,"<size=60>Aim at opponent and hit Calibrate</size>");
         }
-        if (_gameManager.STATE == GameManager.GameState.Calibration) {
-            GUI.Label(messageRect,"<size=40>Wait for opponent to calibrate ");
+        if (_gameManager.STATE == GameManager.GameState.WaitForCalibration) {
+            GUI.Label(messageRect,"<size=60>Waiting for opponent. Get Ready!</size>");
         }
         if (_gameManager.STATE == GameManager.GameState.CountDown) {
-            GUI.Label(messageRect,"<size=40>Take three steps and turn around!</size>");
+            GUI.Label(messageRect,"<size=60>Take three steps and turn around!</size>");
         }
         if (_gameManager.STATE == GameManager.GameState.Unprepared) {
-            GUI.Label(messageRect,"<size=40>Tap cylinder!</size>");
+            GUI.Label(messageRect,"<size=60>Tap cylinder!</size>");
         }
         if (_gameManager.STATE == GameManager.GameState.Opened) {
-            GUI.Label(messageRect,"<size=40>Drag in ALL the bullets!</size>");
+            GUI.Label(messageRect,"<size=60>Drag in ALL the bullets!</size>");
         }
         if (_gameManager.STATE == GameManager.GameState.Closed) {
-            GUI.Label(messageRect,"<size=40>Tap the hammer!</size>");
+            GUI.Label(messageRect,"<size=60>Tap the hammer!</size>");
         }
         if (_gameManager.STATE == GameManager.GameState.Aiming) {
-            GUI.Label(messageRect,"<size=40>AIM AND TAP TO FIRE</size>");
+            GUI.Label(messageRect,"<size=60>AIM AND TAP TO FIRE</size>");
         }
     }
 }

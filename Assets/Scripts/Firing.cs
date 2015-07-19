@@ -7,27 +7,34 @@ public class Firing : MonoBehaviour {
     double _fireTime = 0;
     bool _wasHit = false;
     bool _firing = false;
+    float _shotDelay = 0.5f;
+    float _shotTimer = 0f;
 
     void Start() {
         _gameManager = GameManager.instance;
     }
 
     void Fire() {
-        Debug.Log("Firing");
-        if (Aiming.instance.InSights && _fireTime == 0) {
-            GunAnimation.instance.Shoot();
+        if (_shotTimer >= _shotDelay) {
+            Debug.Log("Firing");
+            // GunAnimation.instance.Shoot();
             GunAnimation.instance.PlayShot();
-            _fireTime = Network.time;
-            Debug.Log("Hit with networktime " + _fireTime);
-            if (Network.isServer) {
-                GetComponent<NetworkView>().RPC("Shot", RPCMode.Others);
+            _shotTimer = 0f;
+            if (Aiming.instance.InSights && _fireTime == 0) {
+                GunAnimation.instance.Shoot();
+                GunAnimation.instance.PlayShot();
+                _fireTime = Network.time;
+                Debug.Log("Hit with networktime " + _fireTime);
+                if (Network.isServer) {
+                    GetComponent<NetworkView>().RPC("Shot", RPCMode.Others);
+                }
+                if (Network.isClient) {
+                    GetComponent<NetworkView>().RPC("Shot", RPCMode.Server);
+                }
             }
-            if (Network.isClient) {
-                GetComponent<NetworkView>().RPC("Shot", RPCMode.Server);
+            else {
+                // Play ricochet sound
             }
-        }
-        else {
-            // Play ricochet sound
         }
     }
 
@@ -71,6 +78,7 @@ public class Firing : MonoBehaviour {
     }
 
     void Update () {
+        _shotTimer += Time.deltaTime;
         if (_gameManager.STATE == GameManager.GameState.Aiming) {
             for (var i = 0; i < Input.touchCount; ++i) {
                 if (Input.GetTouch(i).phase == TouchPhase.Began) {

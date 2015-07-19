@@ -28,7 +28,7 @@ public class MenuScript : MonoBehaviour {
         GUI.skin.textField.fontSize = 35;
         if (!Network.isServer) {
             Background.enabled = true;
-            ip = GUI.TextField(new Rect(Screen.width*0.53f, Screen.height - Screen.height/7, 300, 60), ip);
+            ip = GUI.TextField(new Rect(Screen.width*0.53f, Screen.height - Screen.height/7, 265, 60), ip);
             GUI.Label(new Rect(Screen.width*0.4f, Screen.height - Screen.height/7, 300, 50), "<size=40>IP-address</size>");
 
             if(GUI.Button(new Rect(Screen.width*0.03f, Screen.height*0.45f, Screen.width*0.4f, Screen.height/4), "".ToUpper(), GUIStyle.none)){
